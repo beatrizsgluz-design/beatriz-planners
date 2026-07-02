@@ -6,6 +6,16 @@
   <title>Fitness Planner</title>
 
   <style>
+    :root {
+      --wine: #8f3855;
+      --rose: #c8618a;
+      --rose-soft: #fff0f6;
+      --line: #f0d3df;
+      --ink: #684252;
+      --muted: #966f7e;
+      --paper: #fffdfd;
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -17,74 +27,414 @@
       place-items: center;
       padding: 24px;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #fff7fb, #fde5ef, #f4c7da);
-      color: #6b4253;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.9) 0 2px, transparent 3px),
+        linear-gradient(135deg, #fff8fb, #fde7f0, #f6cadd);
     }
 
-    main {
-      width: min(100%, 720px);
-      padding: 48px 32px;
+    .app {
+      position: relative;
+      width: min(100%, 760px);
+      overflow: hidden;
+      padding: 48px 34px;
+      border: 1px solid rgba(194, 91, 132, .23);
+      border-radius: 30px;
       text-align: center;
-      border: 1px solid rgba(194, 91, 132, 0.22);
-      border-radius: 28px;
-      background: rgba(255, 255, 255, 0.82);
-      box-shadow: 0 24px 60px rgba(143, 57, 92, 0.16);
+      background: rgba(255, 255, 255, .86);
+      box-shadow: 0 24px 64px rgba(143, 57, 92, .16);
+    }
+
+    .app::before {
+      content: "";
+      position: absolute;
+      width: 270px;
+      height: 270px;
+      left: -155px;
+      bottom: -160px;
+      border: 36px solid rgba(255, 226, 238, .72);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .app::after {
+      content: "";
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      top: -126px;
+      right: -108px;
+      border: 30px solid rgba(255, 229, 240, .72);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     .icon {
       display: grid;
       place-items: center;
-      width: 66px;
-      height: 66px;
+      width: 70px;
+      height: 70px;
       margin: 0 auto 18px;
-      border-radius: 22px;
-      background: #fff0f6;
-      color: #a13f65;
-      font-size: 28px;
+      border-radius: 24px;
+      color: var(--wine);
+      background: var(--rose-soft);
+      font-size: 29px;
     }
 
     h1 {
       margin: 0;
-      color: #963957;
+      color: var(--wine);
       font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(40px, 7vw, 64px);
+      font-size: clamp(42px, 7vw, 66px);
       font-style: italic;
       letter-spacing: -2px;
+      line-height: 1;
     }
 
-    p {
-      max-width: 470px;
+    .subtitle {
+      max-width: 500px;
       margin: 16px auto 0;
-      color: #956d7d;
+      color: var(--muted);
       font-size: 16px;
       line-height: 1.6;
     }
 
-    .status {
-      display: inline-block;
-      margin-top: 24px;
-      padding: 9px 13px;
-      border-radius: 999px;
-      background: #fff0f6;
-      color: #a13f65;
+    .card {
+      position: relative;
+      z-index: 1;
+      max-width: 420px;
+      margin: 30px auto 0;
+      padding: 21px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      text-align: left;
+      background: #fffafd;
+    }
+
+    .card h2 {
+      margin: 0;
+      color: var(--wine);
+      font-size: 17px;
+    }
+
+    .card p {
+      margin: 7px 0 16px;
+      color: var(--muted);
       font-size: 12px;
-      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      outline: none;
+      color: var(--ink);
+      background: #fff;
+      font-size: 14px;
+    }
+
+    input:focus {
+      border-color: #df8eae;
+      box-shadow: 0 0 0 4px rgba(200, 97, 138, .12);
+    }
+
+    button {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 11px;
+      border: 0;
+      border-radius: 12px;
+      color: #fff;
+      background: linear-gradient(135deg, #c8618a, #9c3f5d);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:hover {
+      filter: brightness(1.03);
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: .7;
+    }
+
+    .message {
+      min-height: 20px;
+      margin: 13px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .message.success {
+      color: #5e8d6a;
+    }
+
+    .message.error {
+      color: #ae4864;
+    }
+
+    .dashboard {
+      display: none;
+      position: relative;
+      z-index: 1;
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    .welcome {
+      padding: 19px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fffafd;
+    }
+
+    .welcome h2 {
+      margin: 0;
+      color: var(--wine);
+      font-size: 19px;
+    }
+
+    .welcome p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 11px;
+      margin-top: 13px;
+    }
+
+    .item {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      color: var(--wine);
+      background: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .logout {
+      width: auto;
+      min-height: auto;
+      margin-top: 14px;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: #fff;
+      font-size: 11px;
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 12px;
+      }
+
+      .app {
+        padding: 38px 20px;
+        border-radius: 24px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
 <body>
-  <main>
+  <main class="app">
     <div class="icon">✦</div>
 
     <h1>Fitness Planner</h1>
 
-    <p>
-      Estrutura online criada com sucesso.
-      Em breve: treino do dia, check-in, hidratação e histórico sincronizado.
+    <p class="subtitle">
+      Seu espaço para cuidar do movimento, da hidratação,
+      dos treinos e da sua constância.
     </p>
 
-    <div class="status">Projeto em construção</div>
+    <section id="loginBox" class="card">
+      <h2>Entrar no seu planner</h2>
+
+      <p>
+        Digite seu e-mail. Você receberá um link seguro para acessar
+        o Fitness Planner, sem precisar criar senha.
+      </p>
+
+      <label for="email">Seu e-mail</label>
+
+      <input
+        id="email"
+        type="email"
+        placeholder="voce@email.com"
+        autocomplete="email"
+      />
+
+      <button id="loginButton" type="button">
+        Enviar link de acesso
+      </button>
+
+      <div id="message" class="message">
+        Use o e-mail que você quer vincular ao seu planner.
+      </div>
+    </section>
+
+    <section id="dashboard" class="dashboard">
+      <div class="welcome">
+        <h2>Bem-vinda ao seu Fitness Planner ✦</h2>
+
+        <p id="userEmail">
+          Carregando seus dados...
+        </p>
+      </div>
+
+      <div class="grid">
+        <div class="item">Treino do Dia</div>
+        <div class="item">Check-in</div>
+        <div class="item">Hidratação</div>
+      </div>
+
+      <button id="logoutButton" class="logout" type="button">
+        Sair desta conta
+      </button>
+    </section>
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://imxuoylxzyssyxeiwuxv.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_iT7takqEUCjoeIMITYbZcw_xm8VQBGW";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
+
+    const loginBox = document.getElementById("loginBox");
+    const dashboard = document.getElementById("dashboard");
+    const emailInput = document.getElementById("email");
+    const loginButton = document.getElementById("loginButton");
+    const logoutButton = document.getElementById("logoutButton");
+    const message = document.getElementById("message");
+    const userEmail = document.getElementById("userEmail");
+
+    function showMessage(text, type = "") {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    function showDashboard(user) {
+      loginBox.style.display = "none";
+      dashboard.style.display = "block";
+      userEmail.textContent =
+        "Você entrou como " + (user.email || "sua conta") + ".";
+    }
+
+    function showLogin() {
+      loginBox.style.display = "block";
+      dashboard.style.display = "none";
+    }
+
+    async function checkSession() {
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      if (error) {
+        showMessage("Não foi possível verificar a sessão.", "error");
+        return;
+      }
+
+      if (data.session && data.session.user) {
+        showDashboard(data.session.user);
+      } else {
+        showLogin();
+      }
+    }
+
+    loginButton.addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+
+      if (!email || !email.includes("@")) {
+        showMessage("Digite um e-mail válido.", "error");
+        emailInput.focus();
+        return;
+      }
+
+      loginButton.disabled = true;
+      loginButton.textContent = "Enviando link...";
+      showMessage("Aguarde um instante.");
+
+      const { error } = await supabaseClient.auth.signInWithOtp({
+        email: email,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+
+      if (error) {
+        showMessage(
+          "Não foi possível enviar o link. Tente novamente em alguns instantes.",
+          "error"
+        );
+      } else {
+        showMessage(
+          "Link enviado. Abra seu e-mail e clique no botão de acesso.",
+          "success"
+        );
+      }
+
+      loginButton.disabled = false;
+      loginButton.textContent = "Enviar link de acesso";
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      await supabaseClient.auth.signOut();
+      showLogin();
+      emailInput.value = "";
+      showMessage("Você saiu da conta com segurança.");
+    });
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session && session.user) {
+        showDashboard(session.user);
+      }
+
+      if (event === "SIGNED_OUT") {
+        showLogin();
+      }
+    });
+
+    checkSession();
+  </script>
 </body>
 </html>
